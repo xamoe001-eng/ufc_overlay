@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFC 331 Fight Card - Auto Roll Overlay</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="chroma-active">
+
+  <!-- Fixed Top Control Toolbar (OBS Interact Mode ဖြင့် ထိန်းချုပ်ရန်) -->
+  <header class="control-header">
+    <div class="brand-title">UFC 331: FIGHT CARD OVERLAY</div>
+
+    <div class="controls-cluster">
+      <!-- Auto Roll Controls -->
+      <div class="roll-controls">
+        <button id="roll-toggle-btn" class="ctrl-btn btn-play" onclick="toggleAutoRoll()">⏸ Pause Roll</button>
+        <div class="speed-selector">
+          <label>Speed:</label>
+          <button class="speed-btn" onclick="setScrollSpeed(0.5, this)">0.5x</button>
+          <button class="speed-btn active" onclick="setScrollSpeed(1.0, this)">1.0x</button>
+          <button class="speed-btn" onclick="setScrollSpeed(2.0, this)">2.0x</button>
+        </div>
+        <button class="ctrl-btn" onclick="resetScrollTop()">⬆ Top</button>
+      </div>
+
+      <!-- Chroma & Reset Controls -->
+      <div class="system-controls">
+        <button id="toggle-chroma-btn" class="ctrl-btn btn-chroma" onclick="toggleChroma()">
+          BG: Green Screen (ON)
+        </button>
+        <button class="ctrl-btn btn-danger" onclick="resetAllFights()">Reset Results</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Auto Scrolling Viewport -->
+  <main class="scroll-viewport" id="scrollViewport">
+    <div class="scroll-content" id="scrollContent">
+
+      <!-- ================= MAIN CARD ================= -->
+      <section class="card-section">
+        <div class="section-banner main-banner">
+          <span>MAIN CARD</span>
+          <span class="time-badge">9 PM ET / 6 PM PT</span>
+        </div>
+
+        <div class="fights-list">
+          <!-- Fight 1 (Title Fight) -->
+          <article class="fight-row title-fight" id="fight-1">
+            <div class="division-tag">🏆 UFC FLYWEIGHT CHAMPIONSHIP BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/van.png" alt="Joshua Van" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=VAN'">
+                  <span class="flag">🇲🇲</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">JOSHUA VAN</div>
+              </div>
+
+              <div class="vs-indicator">
+                <span>VS</span>
+              </div>
+
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/pantoja.png" alt="Alexandre Pantoja" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=PANTOJA'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">ALEXANDRE PANTOJA</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-1', 'A')">VAN Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-1', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-1', 'B')">PANTOJA Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-1')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 2 -->
+          <article class="fight-row" id="fight-2">
+            <div class="division-tag">LIGHTWEIGHT CO-MAIN BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/tsarukyan.png" alt="Arman Tsarukyan" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=TSARUKYAN'">
+                  <span class="flag">🇦🇲</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">ARMAN TSARUKYAN</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/ruffy.png" alt="Mauricio Ruffy" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=RUFFY'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">MAURICIO RUFFY</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-2', 'A')">TSARUKYAN Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-2', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-2', 'B')">RUFFY Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-2')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 3 -->
+          <article class="fight-row" id="fight-3">
+            <div class="division-tag">FEATHERWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/pitbull.png" alt="Pitbull" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=PITBULL'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">PATRICIO PITBULL</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/choi.png" alt="Doo Ho Choi" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=CHOI'">
+                  <span class="flag">🇰🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">DOO HO CHOI</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-3', 'A')">PITBULL Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-3', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-3', 'B')">CHOI Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-3')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 4 (Updated: CASEY O'NEILL vs EDUARDA MOURA) -->
+          <article class="fight-row" id="fight-4">
+            <div class="division-tag">WOMEN'S FLYWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/oneill.png" alt="Casey O'Neill" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=O\'NEILL'">
+                  <span class="flag">🇦🇺</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">CASEY O'NEILL</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/moura.png" alt="Eduarda Moura" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=MOURA'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">EDUARDA MOURA</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-4', 'A')">O'NEILL Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-4', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-4', 'B')">MOURA Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-4')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 5 -->
+          <article class="fight-row" id="fight-5">
+            <div class="division-tag">LIGHT HEAVYWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/menifield.png" alt="Alonzo Menifield" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=MENIFIELD'">
+                  <span class="flag">🇺🇸</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">ALONZO MENIFIELD</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/baraniewski.png" alt="Rafal Baraniewski" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=BARANIEWSKI'">
+                  <span class="flag">🇵🇱</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">RAFAL BARANIEWSKI</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-5', 'A')">MENIFIELD Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-5', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-5', 'B')">BARANIEWSKI Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-5')">↺</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= PRELIMS ================= -->
+      <section class="card-section">
+        <div class="section-banner prelim-banner">
+          <span>PRELIMS</span>
+          <span class="time-badge">7 PM ET / 4 PM PT</span>
+        </div>
+
+        <div class="fights-list">
+          <!-- Fight 6 -->
+          <article class="fight-row" id="fight-6">
+            <div class="division-tag">HEAVYWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/steveson.png" alt="Gable Steveson" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=STEVESON'">
+                  <span class="flag">🇺🇸</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">GABLE STEVESON</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/sharaf.png" alt="Hamdy Sharaf" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=SHARAF'">
+                  <span class="flag">🇪🇬</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">HAMDY SHARAF</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-6', 'A')">STEVESON Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-6', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-6', 'B')">SHARAF Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-6')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 7 -->
+          <article class="fight-row" id="fight-7">
+            <div class="division-tag">BANTAMWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/vera.png" alt="Marlon Vera" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=VERA'">
+                  <span class="flag">🇪🇨</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">MARLON VERA</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/jourdain.png" alt="Charles Jourdain" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=JOURDAIN'">
+                  <span class="flag">🇨🇦</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">CHARLES JOURDAIN</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-7', 'A')">VERA Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-7', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-7', 'B')">JOURDAIN Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-7')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 8 -->
+          <article class="fight-row" id="fight-8">
+            <div class="division-tag">HEAVYWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/tuivasa.png" alt="Tai Tuivasa" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=TUIVASA'">
+                  <span class="flag">🇦🇺</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">TAI TUIVASA</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/despaigne.png" alt="Robelis Despaigne" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=DESPAIGNE'">
+                  <span class="flag">🇨🇺</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">ROBELIS DESPAIGNE</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-8', 'A')">TUIVASA Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-8', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-8', 'B')">DESPAIGNE Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-8')">↺</button>
+            </div>
+          </article>
+
+          <!-- Fight 9 -->
+          <article class="fight-row" id="fight-9">
+            <div class="division-tag">FEATHERWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/aswell.png" alt="Timothy Aswell Jr" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=ASWELL+JR'">
+                  <span class="flag">🇺🇸</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">TIMOTHY ASWELL JR</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/yoo.png" alt="Sang Won Yoo" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=YOO'">
+                  <span class="flag">🇰🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">SANG WON YOO</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-9', 'A')">ASWELL Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-9', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-9', 'B')">YOO Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-9')">↺</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= EARLY PRELIMS ================= -->
+      <section class="card-section">
+        <div class="section-banner early-banner">
+          <span>EARLY PRELIMS</span>
+          <span class="time-badge">5 PM ET / 2 PM PT</span>
+        </div>
+
+        <div class="fights-list">
+          <!-- Fight 10 -->
+          <article class="fight-row" id="fight-10">
+            <div class="division-tag">MIDDLEWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/gandra.png" alt="Lucas Gandra" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=GANDRA'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">LUCAS GANDRA</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/diaz.png" alt="Nick Diaz" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=DIAZ'">
+                  <span class="flag">🇺🇸</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">NICK DIAZ</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-10', 'A')">GANDRA Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-10', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-10', 'B')">DIAZ Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-10')">↺</button>
+            </div>
+          </article>
+
+  <!-- Fight 11 -->
+          <article class="fight-row" id="fight-11">
+            <div class="division-tag">FEATHERWEIGHT BOUT</div>
+            <div class="match-display">
+              <div class="fighter-side fighter-a">
+                <div class="photo-box">
+                  <img src="images/chikadze.png" alt="Giga Chikadze" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=CHIKADZE'">
+                  <span class="flag">🇬🇪</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">GIGA CHIKADZE</div>
+              </div>
+              <div class="vs-indicator"><span>VS</span></div>
+              <div class="fighter-side fighter-b">
+                <div class="photo-box">
+                  <img src="images/brito.png" alt="Joanderson Brito" onerror="this.src='https://via.placeholder.com/150x180/111827/ffffff?text=BRITO'">
+                  <span class="flag">🇧🇷</span>
+                  <div class="result-badge"></div>
+                </div>
+                <div class="fighter-name">JOANDERSON BRITO</div>
+              </div>
+            </div>
+            <div class="action-dock">
+              <button class="act-btn win-btn" onclick="setFightResult('fight-11', 'A')">CHIKADZE Win</button>
+              <button class="act-btn draw-btn" onclick="setFightResult('fight-11', 'D')">DRAW</button>
+              <button class="act-btn win-btn" onclick="setFightResult('fight-11', 'B')">BRITO Win</button>
+              <button class="act-btn rst-btn" onclick="resetSingleFight('fight-11')">↺</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Bottom Buffer -->
+      <div style="height: 140px;"></div>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
